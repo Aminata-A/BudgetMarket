@@ -37,10 +37,11 @@ body {
     align-items: center;
     height: 100vh;
     width: 100%;
+    overflow: hidden; /* Empêche le défilement pendant l'animation */
 }
 
 /* Conteneur principal */
-div {
+#welcome-container {
     text-align: center;
     animation: fadeIn 2s ease-out;
 }

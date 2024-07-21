@@ -53,13 +53,13 @@ document.addEventListener('DOMContentLoaded', () => {
             displayFormError('Erreur lors de l\'ajout du produit: ' + error.message);
         } else {
             displaySuccessMessage('Produit ajouté avec succès!');
-            event.target.reset(); // Réinitialiser le formulaire
+            event.target.reset(); 
 
             // Rediriger l'utilisateur vers la page product.html avec la date spécifiée
 
             setTimeout(() => {
                 window.location.href = `/shopping/product/HTML/product.html?date=${date}`;
-            }, 2000); // Délai de 2 secondes avant la redirection pour afficher le message de succès
+            }); 
         }
     }
 
