@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Définition des animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+/* Style de base */
+body {
+    background-color: #070025;
+    font-family: "Irish Grover", system-ui;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+}
+
+/* Conteneur principal */
+div {
+    text-align: center;
+    animation: fadeIn 2s ease-out;
+}
+
+/* Style du titre */
+h1 {
+    font-size: 2.5rem;
+    color: #fff; /* Ajusté pour la visibilité sur un fond sombre */
+    animation: slideIn 1.5s ease-out;
+}
+
+/* Style de l'image */
+img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    animation: fadeIn 2s ease-in-out;
+}
