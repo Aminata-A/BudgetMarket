@@ -33,9 +33,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.getElementById('filter-date').addEventListener('change', filterProductsByDate);
     document.getElementById('search-input').addEventListener('input', filterProductsBySearch);
-    document.getElementById('filter-all').addEventListener('click', () => filterProductsByDate());
-    document.getElementById('filter-purchased').addEventListener('click', () => filterProductsByDate(true));
-    document.getElementById('filter-pending').addEventListener('click', () => filterProductsByDate(false));
+    document.getElementById('filter-all').addEventListener('click', () => loadProducts());
+    document.getElementById('filter-purchased').addEventListener('click', () => loadProducts(true));
+    document.getElementById('filter-pending').addEventListener('click', () => loadProducts(false));
   } catch (error) {
     console.error('Erreur lors de l\'initialisation:', error.message);
   }
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function loadProductsForToday() {
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('filter-date').value = today;
-  await filterProductsByDate();
+  await loadProducts();
 }
 
 async function loadProducts(filter = null) {
@@ -133,8 +133,8 @@ function renderProducts(products, filterType = null) {
                 ${product.is_purchased ? 'Acheté' : 'Acheter'}
               </button>
               <div class="d-flex">
-                <button class="btn b modify-button" data-id="${product.id}"><i class="fas fa-pencil-alt"></i></button>
-                <button class="btn text-danger delete-button" data-id="${product.id}"><i class="fas fa-trash"></i></button>
+                <button class="btn btn-light modify-button" data-id="${product.id}"><i class="fas fa-pencil-alt"></i></button>
+                <button class="btn btn-light text-danger delete-button" data-id="${product.id}"><i class="fas fa-trash"></i></button>
               </div>
             </div>
             <hr>
@@ -146,44 +146,14 @@ function renderProducts(products, filterType = null) {
       `;
       productList.appendChild(card);
     });
+
+    // Attacher les gestionnaires d'événements après le rendu des produits
+    attachEventListeners();
   }
 }
 
-async function filterProductsByDate(isPurchased = null) {
-  const filterDate = document.getElementById('filter-date').value;
-  try {
-    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-
-    if (sessionError) {
-      console.error('Erreur lors de la récupération de la session:', sessionError.message);
-      return;
-    }
-
-    if (!session || !session.user) {
-      console.error('Aucun utilisateur connecté pour filtrer les produits');
-      return;
-    }
-
-    let query = supabase
-      .from('shopping-list')
-      .select('*')
-      .eq('user_id', session.user.id)
-      .eq('date', filterDate);
-
-    if (isPurchased !== null) {
-      query = query.eq('is_purchased', isPurchased);
-    }
-
-    const { data: products, error } = await query;
-
-    if (error) {
-      console.error('Erreur lors du filtrage des produits par date:', error.message);
-    } else {
-      renderProducts(products, isPurchased !== null ? (isPurchased ? 'purchased' : 'pending') : null);
-    }
-  } catch (error) {
-    console.error('Erreur lors du filtrage des produits par date:', error.message);
-  }
+async function filterProductsByDate() {
+  await loadProducts();
 }
 
 async function filterProductsBySearch() {
@@ -207,167 +177,138 @@ async function filterProductsBySearch() {
       .from('shopping-list')
       .select('*')
       .eq('user_id', session.user.id)
-      .eq('date', filterDate);
+      .eq('date', filterDate)
+      .ilike('product_name', `%${searchInput}%`);
 
     if (error) {
       console.error('Erreur lors du filtrage des produits par recherche:', error.message);
     } else {
-      const filteredProducts = products.filter(product => product.product_name.toLowerCase().includes(searchInput));
-      renderProducts(filteredProducts);
+      renderProducts(products);
     }
   } catch (error) {
     console.error('Erreur lors du filtrage des produits par recherche:', error.message);
   }
 }
 
-document.addEventListener('click', async event => {
-  if (event.target.classList.contains('purchase-button')) {
-    const productId = event.target.dataset.id;
-    await updateProductPurchaseStatus(productId);
+function attachEventListeners() {
+  // Événement pour le bouton "Modifier"
+  document.querySelectorAll('.modify-button').forEach(button => {
+    button.addEventListener('click', async (event) => {
+      const productId = event.currentTarget.getAttribute('data-id');
+      await openModifyPopup(productId);
+    });
+  });
+
+  // Événement pour le bouton "Supprimer"
+  document.querySelectorAll('.delete-button').forEach(button => {
+    button.addEventListener('click', async (event) => {
+      const productId = event.currentTarget.getAttribute('data-id');
+      if (confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
+        await deleteProduct(productId);
+      }
+    });
+  });
+
+  // Événement pour le bouton "Acheter"
+  document.querySelectorAll('.purchase-button').forEach(button => {
+    button.addEventListener('click', async (event) => {
+      const productId = event.currentTarget.getAttribute('data-id');
+      await togglePurchaseStatus(productId);
+    });
+  });
+}
+
+async function openModifyPopup(productId) {
+  const { data: product, error } = await supabase
+    .from('shopping-list')
+    .select('*')
+    .eq('id', productId)
+    .single();
+
+  if (error) {
+    console.error('Erreur lors de la récupération du produit pour modification:', error.message);
+    return;
+  }
+
+  const modal = new bootstrap.Modal(document.getElementById('editProductModal'));
+  document.getElementById('editProductId').value = productId;
+  document.getElementById('editProductName').value = product.product_name;
+  document.getElementById('editProductPrice').value = product.product_price;
+  document.getElementById('editProductDate').value = product.date;
+  document.getElementById('editProductQuantity').value = product.quantity;
+
+  modal.show();
+}
+
+document.getElementById('editProductForm').addEventListener('submit', async (event) => {
+  event.preventDefault();
+  
+  const productId = document.getElementById('editProductId').value;
+  const productName = document.getElementById('editProductName').value;
+  const productPrice = document.getElementById('editProductPrice').value;
+  const productDate = document.getElementById('editProductDate').value;
+  const productQuantity = document.getElementById('editProductQuantity').value;
+
+  try {
+    const { error } = await supabase
+      .from('shopping-list')
+      .update({ product_name: productName, product_price: productPrice, date: productDate, quantity: productQuantity })
+      .eq('id', productId);
+
+    if (error) {
+      console.error('Erreur lors de la mise à jour du produit:', error.message);
+    } else {
+      const modal = bootstrap.Modal.getInstance(document.getElementById('editProductModal'));
+      modal.hide();
+      await loadProducts(); // Recharger les produits après modification
+    }
+  } catch (error) {
+    console.error('Erreur lors de la mise à jour du produit:', error.message);
   }
 });
 
-async function updateProductPurchaseStatus(productId) {
+async function deleteProduct(productId) {
   try {
-    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    const { error } = await supabase
+      .from('shopping-list')
+      .delete()
+      .eq('id', productId);
 
-    if (sessionError) {
-      console.error('Erreur lors de la récupération de la session:', sessionError.message);
-      return;
+    if (error) {
+      console.error('Erreur lors de la suppression du produit:', error.message);
+    } else {
+      await loadProducts(); // Recharger les produits après suppression
     }
+  } catch (error) {
+    console.error('Erreur lors de la suppression du produit:', error.message);
+  }
+}
 
-    if (!session || !session.user) {
-      console.error('Aucun utilisateur connecté pour mettre à jour le statut d\'achat');
-      return;
-    }
-
-    const { data: product, error: productError } = await supabase
+async function togglePurchaseStatus(productId) {
+  try {
+    const { data: product, error } = await supabase
       .from('shopping-list')
       .select('is_purchased')
-      .eq('user_id', session.user.id)
       .eq('id', productId)
       .single();
 
-    if (productError) {
-      console.error('Erreur lors de la récupération du produit:', productError.message);
+    if (error) {
+      console.error('Erreur lors de la récupération du produit:', error.message);
       return;
     }
 
     const newStatus = !product.is_purchased;
-
     const { error: updateError } = await supabase
       .from('shopping-list')
       .update({ is_purchased: newStatus })
-      .eq('user_id', session.user.id)
       .eq('id', productId);
 
     if (updateError) {
       console.error('Erreur lors de la mise à jour du statut d\'achat:', updateError.message);
     } else {
-      await loadProductsForToday();
+      await loadProducts(); // Recharger les produits après mise à jour
     }
   } catch (error) {
     console.error('Erreur lors de la mise à jour du statut d\'achat:', error.message);
   }
 }
-    document.addEventListener('click', async (event) => {
-      if (event.target.classList.contains('modify-button')) {
-        const productId = event.target.dataset.id;
-        const { data: product, error } = await supabase
-        .from('shopping-list')
-        .select('*')
-        .eq('id', productId)
-        .single();
-        
-        if (error) {
-          console.error('Erreur lors de la récupération du produit:', error.message);
-          return;
-        }
-        
-        document.getElementById('editProductId').value = product.id;
-        document.getElementById('editProductName').value = product.product_name;
-        document.getElementById('editProductPrice').value = product.product_price;
-        document.getElementById('editProductDate').value = product.date;
-        document.getElementById('editProductQuantity').value = product.quantity;
-        
-        const editProductModal = new bootstrap.Modal(document.getElementById('editProductModal'));
-        editProductModal.show();
-      }
-    });
-    document.getElementById('editProductForm').addEventListener('submit', async (event) => {
-      event.preventDefault();
-      
-      const productId = document.getElementById('editProductId').value;
-      const productName = document.getElementById('editProductName').value;
-      const productPrice = document.getElementById('editProductPrice').value;
-      const productDate = document.getElementById('editProductDate').value;
-      const productQuantity = document.getElementById('editProductQuantity').value;
-      
-      const { error } = await supabase
-      .from('shopping-list')
-      .update({
-        product_name: productName,
-        product_price: productPrice,
-        date: productDate,
-        quantity: productQuantity
-      })
-      .eq('id', productId);
-      
-      if (error) {
-        console.error('Erreur lors de la modification du produit:', error.message);
-      } else {
-        // Recharger les produits pour refléter les modifications
-        await loadProducts();
-        // Fermer la modale
-        const editProductModal = bootstrap.Modal.getInstance(document.getElementById('editProductModal'));
-        editProductModal.hide();
-      }
-
-
-    });
-    document.addEventListener('click', async (event) => {
-  // Gestion du clic sur le bouton de modification
-  if (event.target.classList.contains('modify-button')) {
-    const productId = event.target.dataset.id;
-    const { data: product, error } = await supabase
-      .from('shopping-list')
-      .select('*')
-      .eq('id', productId)
-      .single();
-    
-    if (error) {
-      console.error('Erreur lors de la récupération du produit:', error.message);
-      return;
-    }
-    
-    document.getElementById('editProductId').value = product.id;
-    document.getElementById('editProductName').value = product.product_name;
-    document.getElementById('editProductPrice').value = product.product_price;
-    document.getElementById('editProductDate').value = product.date;
-    document.getElementById('editProductQuantity').value = product.quantity;
-    
-    const editProductModal = new bootstrap.Modal(document.getElementById('editProductModal'));
-    editProductModal.show();
-  }
-
-  // Gestion du clic sur le bouton de suppression
-  if (event.target.classList.contains('delete-button')) {
-    const productId = event.target.dataset.id;
-    const { error } = await supabase
-      .from('shopping-list')
-      .delete()
-      .eq('id', productId);
-    
-    if (error) {
-      console.error('Erreur lors de la suppression du produit:', error.message);
-    } else {
-      // Recharger les produits après la suppression
-      await loadProducts();
-    }
-  }
-
- 
-});
-
-
-    
