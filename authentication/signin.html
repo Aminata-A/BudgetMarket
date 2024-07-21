@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="authentication.css">
+    <title>Connexion</title>
+</head>
+<body>
+    <div>
+        <h1>Connexion</h1>
+        <form id="signin-form" action="#" style="height: 85vh;">
+            <div class="form-group">
+                <label for="email">Adresse email</label>
+                <input type="email" id="email" name="email" placeholder="Exemple@gmail.com">
+                <span class="error"></span>
+            </div>
+            <div class="form-group">
+                <label for="password">Mot de passe</label>
+                <input type="password" id="password" name="password" placeholder="Mot de passe">
+                <span class="error"></span>
+            </div>
+            <button type="submit">Connexion</button>
+            <p>Si vous n'avez pas de compte <a href="signup.html">S'inscrire</a></p>
+            <div id="form-error" class="error" style="display: none;"></div>
+        </form>
+    </div>
+    <script type="module" src="signin.js"></script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+@import url("https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #070025;
+  font-family: "Irish Grover", system-ui;
+  color: #fff;
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+body h1 {
+  text-align: center;
+  margin-top: 2em;
+  font-size: 2.5rem;
+  height: 10vh;
+}
+body form {
+  background-color: #fff;
+  color: #070025;
+  width: 25em;
+  height: 85vh;
+  padding: 2em;
+  border-radius: 30px 30px 0 0;
+}
+body form div {
+  display: flex;
+  flex-direction: column;
+}
+body form div label {
+  font-size: 1.2rem;
+  padding: 1rem 0 0.5rem 0;
+}
+body form div input {
+  padding: 1rem 0 1rem 0.4rem;
+  border-radius: 6px;
+}
+body form button {
+  width: 100%;
+  background-color: #070025;
+  color: #fff;
+  font-family: "Irish Grover", system-ui;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-top: 1rem;
+}
+body form p {
+  font-family: "Roboto", sans-serif;
+  text-align: center;
+  margin: 1rem 0;
+}
+body form p a {
+  color: #070025;
+  font-weight: 800;
+  text-decoration: none;
+}/*# sourceMappingURL=authentication.css.map */
