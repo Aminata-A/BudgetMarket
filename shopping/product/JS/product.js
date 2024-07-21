@@ -1,34 +1,35 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
 const supabaseUrl = 'https://gtcacfzpieqklamuvbup.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0Y2FjZnpwaWVxa2xhbXV2YnVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjEzMTQ2NzksImV4cCI6MjAzNjg5MDY3OX0.sk6pq5hqqrYMshpcgcMtO4yl2TBhFAqHsx1cdWeySSw';
+const supabaseKey = 'your-supabase-key'; // Remplacez par votre clé Supabase
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    // Vérifie si un utilisateur est connecté
     const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-
     if (sessionError) {
-      console.error('Erreur lors de la récupération de la session:', sessionError.message);
-      return;
+      throw new Error(`Erreur lors de la récupération de la session: ${sessionError.message}`);
     }
 
-    if (session && session.user) {
-      document.getElementById('loginBtn').style.display = 'none';
-      document.getElementById('logoutBtn').style.display = 'inline';
-      await loadProductsForToday();
+    if (session) {
+      // Utilisateur connecté
+      loginBtn.style.display = 'none';
+      logoutBtn.style.display = 'block';
     } else {
-      document.getElementById('loginBtn').style.display = 'inline';
-      document.getElementById('logoutBtn').style.display = 'none';
+      // Aucun utilisateur connecté
+      loginBtn.style.display = 'block';
+      logoutBtn.style.display = 'none';
     }
 
-    document.getElementById('logoutBtn').addEventListener('click', async () => {
-      const { error: signOutError } = await supabase.auth.signOut();
-      if (signOutError) {
-        console.error('Erreur lors de la déconnexion:', signOutError.message);
-      } else {
-        location.reload();
-      }
+    // Gestion de la déconnexion
+    logoutBtn.addEventListener('click', async (event) => {
+      event.preventDefault(); // Empêche la navigation
+      await supabase.auth.signOut();
+      window.location.reload(); // Recharge la page après déconnexion
     });
 
     document.getElementById('filter-date').addEventListener('change', filterProductsByDate);
@@ -36,6 +37,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('filter-all').addEventListener('click', () => loadProducts());
     document.getElementById('filter-purchased').addEventListener('click', () => loadProducts(true));
     document.getElementById('filter-pending').addEventListener('click', () => loadProducts(false));
+
+    await loadProductsForToday(); // Charge les produits pour aujourd'hui au chargement
+
   } catch (error) {
     console.error('Erreur lors de l\'initialisation:', error.message);
   }
@@ -52,13 +56,11 @@ async function loadProducts(filter = null) {
     const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 
     if (sessionError) {
-      console.error('Erreur lors de la récupération de la session:', sessionError.message);
-      return;
+      throw new Error(`Erreur lors de la récupération de la session: ${sessionError.message}`);
     }
 
     if (!session || !session.user) {
-      console.error('Aucun utilisateur connecté pour charger les produits');
-      return;
+      throw new Error('Aucun utilisateur connecté pour charger les produits');
     }
 
     const filterDate = document.getElementById('filter-date').value;
@@ -77,7 +79,7 @@ async function loadProducts(filter = null) {
     const { data: products, error } = await query;
 
     if (error) {
-      console.error('Erreur lors du chargement des produits:', error.message);
+      throw new Error(`Erreur lors du chargement des produits: ${error.message}`);
     } else {
       renderProducts(products, filter !== null ? (filter ? 'purchased' : 'pending') : null);
     }
@@ -162,13 +164,11 @@ async function filterProductsBySearch() {
     const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 
     if (sessionError) {
-      console.error('Erreur lors de la récupération de la session:', sessionError.message);
-      return;
+      throw new Error(`Erreur lors de la récupération de la session: ${sessionError.message}`);
     }
 
     if (!session || !session.user) {
-      console.error('Aucun utilisateur connecté pour filtrer les produits');
-      return;
+      throw new Error('Aucun utilisateur connecté pour filtrer les produits');
     }
 
     const filterDate = document.getElementById('filter-date').value;
@@ -181,7 +181,7 @@ async function filterProductsBySearch() {
       .ilike('product_name', `%${searchInput}%`);
 
     if (error) {
-      console.error('Erreur lors du filtrage des produits par recherche:', error.message);
+      throw new Error(`Erreur lors du filtrage des produits par recherche: ${error.message}`);
     } else {
       renderProducts(products);
     }
@@ -256,7 +256,7 @@ document.getElementById('editProductForm').addEventListener('submit', async (eve
       .eq('id', productId);
 
     if (error) {
-      console.error('Erreur lors de la mise à jour du produit:', error.message);
+      throw new Error(`Erreur lors de la mise à jour du produit: ${error.message}`);
     } else {
       const modal = bootstrap.Modal.getInstance(document.getElementById('editProductModal'));
       modal.hide();
@@ -275,7 +275,7 @@ async function deleteProduct(productId) {
       .eq('id', productId);
 
     if (error) {
-      console.error('Erreur lors de la suppression du produit:', error.message);
+      throw new Error(`Erreur lors de la suppression du produit: ${error.message}`);
     } else {
       await loadProducts(); // Recharger les produits après suppression
     }
@@ -293,7 +293,7 @@ async function togglePurchaseStatus(productId) {
       .single();
 
     if (error) {
-      console.error('Erreur lors de la récupération du produit:', error.message);
+      throw new Error(`Erreur lors de la récupération du produit: ${error.message}`);
       return;
     }
 
@@ -304,7 +304,7 @@ async function togglePurchaseStatus(productId) {
       .eq('id', productId);
 
     if (updateError) {
-      console.error('Erreur lors de la mise à jour du statut d\'achat:', updateError.message);
+      throw new Error(`Erreur lors de la mise à jour du statut d'achat: ${updateError.message}`);
     } else {
       await loadProducts(); // Recharger les produits après mise à jour
     }

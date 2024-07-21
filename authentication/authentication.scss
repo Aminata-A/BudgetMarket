@@ -1,12 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-body{
+
+body {
     background-color: #070025;
     font-family: "Irish Grover", system-ui;
     color: #fff;
@@ -16,32 +17,42 @@ body{
     align-items: center;
     height: 100%;
     width: 100%;
-    h1{
+
+    h1 {
         text-align: center;
         margin-top: 2em;
         font-size: 2.5rem;
         height: 10vh;
     }
-    form{
+
+    form {
         background-color: #fff;
         color: #070025;
-        width: 25em;
-        height: 85vh;
+        width: 100%;
+        max-width: 25em; // Ajouté pour limiter la largeur
+        height: auto;
         padding: 2em;
-        border-radius: 30px  30px 0 0;
-        div{
+        border-radius: 30px 30px 0 0;
+        margin: 1em; // Ajouté pour ajouter de l'espace autour du formulaire
+
+        div {
             display: flex;
             flex-direction: column;
-            label{
-            font-size: 1.2rem;
-            padding: 1rem 0 .5rem 0;
+
+            label {
+                font-size: 1.2rem;
+                padding: 1rem 0 .5rem 0;
             }
-            input{
-                padding:  1rem 0 1rem .4rem;
+
+            input {
+                padding: 1rem 0 1rem .4rem;
                 border-radius: 6px;
+                font-size: 16px; // Ajouté pour éviter le zoom automatique
+                box-sizing: border-box; // Assure que le padding n'affecte pas la largeur totale
             }
         }
-        button{
+
+        button {
             width: 100%;
             background-color: #070025;
             color: #fff;
@@ -50,11 +61,13 @@ body{
             border-radius: 6px;
             margin-top: 1rem;
         }
-        p{
+
+        p {
             font-family: "Roboto", sans-serif;
             text-align: center;
-            margin: 1rem 0 ;
-            a{
+            margin: 1rem 0;
+
+            a {
                 color: #070025;
                 font-weight: 800;
                 text-decoration: none;
@@ -62,4 +75,3 @@ body{
         }
     }
 }
-
