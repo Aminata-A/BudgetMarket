@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Connexion réussie, redirection ou autre action
       console.log('Connexion réussie:', data);
-      window.location.href = 'http://127.0.0.1:5500/shopping/home/Home.html'; 
+      window.location.href = '/shopping/home/home.html'; 
     } catch (error) {
       displayFormError('Une erreur est survenue: ' + error.message);
     }
