@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../../Authentication/authentication.css">
+    <title>Insérer un produit</title>
+</head>
+<body>
+    <div>
+        <h1>Insérer un produit</h1>
+        <form id="add-product-form">
+            <div>
+                <label for="product_name">Nom du produit:</label>
+                <input type="text" id="product_name" name="product_name" placeholder="Le nom du produit" required>
+            </div>
+            <div>
+                <label for="product_price">Prix:</label>
+                <input type="number" id="product_price" name="product_price" step="0.01" placeholder="Le prix du produit" required>
+            </div>
+            <div>
+                <label for="quantity">Quantité:</label>
+                <input type="number" id="quantity" name="quantity" placeholder="Entrez la quantité" required>
+            </div>
+            <div>
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date" required>
+            </div>
+            <div class="d-flex">
+                <button type="submit">Ajouter</button>
+                <a href="product.html" class="text-danger">Annuler</a>
+            </div>
+            <div id="form-error" class="form-error"></div>
+            <div id="form-success" class="form-success"></div>
+        </form>
+    </div>
+    <script type="module" src="../JS/add-product.js"></script>
+</body>
+</html>
