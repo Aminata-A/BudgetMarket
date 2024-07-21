@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="home.css" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">BudgetMarket</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="../home/home.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../product/HTML/product.html">Mes produits</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../product/HTML/add-product.html">Créer un nouveau produit</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a id="loginBtn" class="nav-link" href="/Authentication/signin.html">Se connecter</a>
+          </li>
+          <li class="nav-item">
+            <a id="logoutBtn" class="nav-link" href="/shopping/home/home.html" style="display:none; color: red;">Se déconnecter</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <main class="flex-fill">
+    <div class="container">
+      <img src="./../../img/home.png" alt="home image" class="home-image">
+      <div class="text-content">
+        <h2>Bienvenu</h2>
+        <p>We apologize for any inconvenience this may have caused. We hope to be back online soon. We hope to be back online soon. We hope to be back online soon...</p>
+      </div>
+    </div>
+  </main>
+  <footer>
+    <h2>BudgetMarket</h2>
+    <p>© 2024 Aminata UI. All rights reserved.</p>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+    const supabaseUrl = 'https://gtcacfzpieqklamuvbup.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0Y2FjZnpwaWVxa2xhbXV2YnVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjEzMTQ2NzksImV4cCI6MjAzNjg5MDY3OX0.sk6pq5hqqrYMshpcgcMtO4yl2TBhFAqHsx1cdWeySSw';
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const loginBtn = document.getElementById('loginBtn');
+      const logoutBtn = document.getElementById('logoutBtn');
+
+      // Vérifie si un utilisateur est connecté
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        // Utilisateur connecté
+        loginBtn.style.display = 'none';
+        logoutBtn.style.display = 'block';
+      } else {
+        // Aucun utilisateur connecté
+        loginBtn.style.display = 'block';
+        logoutBtn.style.display = 'none';
+      }
+
+      // Gestion de la déconnexion
+      logoutBtn.addEventListener('click', async () => {
+        await supabase.auth.signOut();
+        window.location.reload(); // Recharge la page après déconnexion
+      });
+    });
+  </script>
+</body>
+</html>

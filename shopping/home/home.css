@@ -1,0 +1,61 @@
+@import url("https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+body {
+  font-family: "Roboto", sans-serif;
+}
+body .navbar-custom {
+  background-color: #070025;
+}
+body .navbar-custom .navbar-brand {
+  font-family: "Irish Grover", system-ui;
+}
+body .navbar-custom .navbar-brand,
+body .navbar-custom .nav-link {
+  color: #ffffff;
+}
+body .navbar-custom .navbar-brand:hover,
+body .navbar-custom .nav-link:hover {
+  color: #f8f9fa;
+}
+body .navbar-custom .navbar-toggler-icon {
+  filter: invert(1);
+}
+body .container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 20px;
+}
+body .container .home-image {
+  max-width: 100%;
+  height: auto;
+}
+body .container .text-content {
+  margin-left: 20px;
+  width: 20em;
+  color: #070025;
+}
+body .container .text-content h2 {
+  font-family: "Irish Grover", system-ui;
+  font-size: 40px;
+}
+@media (max-width: 768px) {
+  body .container {
+    flex-direction: column;
+  }
+  body .container .text-content {
+    margin-left: 0;
+    margin-top: 20px;
+  }
+}
+body footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 2rem 0.5rem 2rem;
+  background-color: #070025;
+  color: #ffffff;
+}
+body footer h2 {
+  font-family: "Irish Grover", system-ui;
+  font-size: 16px;
+}/*# sourceMappingURL=home.css.map */

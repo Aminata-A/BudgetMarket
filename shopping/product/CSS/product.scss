@@ -1,0 +1,225 @@
+@import url('https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900&display=swap');
+
+$navbar-bg-color: #070025;
+$navbar-text-color: #ffffff;
+$navbar-hover-color: #f8f9fa;
+
+body {
+  font-family: "Roboto", sans-serif;
+
+  .navbar-custom {
+    background-color: $navbar-bg-color;
+
+    .navbar-brand {
+      font-family: "Irish Grover", system-ui;
+    }
+
+    .navbar-brand,
+    .nav-link {
+      color: $navbar-text-color;
+
+      &:hover {
+        color: $navbar-hover-color;
+      }
+    }
+
+    .navbar-toggler-icon {
+      filter: invert(1);
+    }
+  }
+
+  .banniere {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    height: auto;
+
+    div {
+      background-color: $navbar-bg-color;
+      width: 100%;
+      max-width: 600px;
+      border-radius: 10px;
+      padding: 20px;
+      color: white;
+      text-align: center;
+
+      h2,
+      p {
+        width: 90%;
+        margin: 0 auto;
+      }
+      .input{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      input {
+        width: 90%;
+        margin-top: 10px;
+      }
+
+      h2 {
+        font-family: "Irish Grover", system-ui;
+      }
+    }
+
+    img {
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      flex-direction: row;
+      justify-content: space-around;
+      height: 70vh;
+
+      div {
+        margin-bottom: 0;
+      }
+
+      img {
+        display: block;
+        max-width: 100%;
+        height: 100%;
+        margin-left: 20px;
+        object-fit: cover;
+      }
+    }
+  }
+
+  #filter-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 0;
+
+    button {
+      margin: 10px;
+    }
+
+    @media (min-width: 768px) {
+      flex-direction: row;
+      justify-content: center;
+    }
+  }
+
+  #product-list {
+    display: flex;
+    flex-direction: column;
+    // align-items: center;
+
+    .card {
+      // width:100%;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      color: #070025;
+      border: 1px solid #ddd;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transition: box-shadow 0.3s ease;
+
+      &:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      }
+
+      .text-center {
+        h4 {
+          font-family: "Irish Grover", system-ui;
+          font-size: 24px;
+        }
+      }
+
+      .card-footer {
+        background-color: $navbar-text-color;
+        color: #070025;
+        display: flex;
+        justify-content: space-between;
+
+        h6 {
+          font-family: "Irish Grover", system-ui;
+          font-size: 20px;
+        }
+      }
+
+      .card-body {
+        padding: 0 1rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        p {
+          margin-bottom: 0.5rem; // Adjust as needed
+        }
+
+        .d-flex {
+          margin-top: 0.5rem; // Adjust as needed
+        }
+
+        .purchase-button {
+          height: 2rem; // Adjust height as needed
+          padding: 0.25rem 0.5rem; // Adjust padding as needed
+        }
+
+        p strong {
+          font-family: "Irish Grover", system-ui;
+          margin-right: 1em;
+        }
+
+        div {
+          display: flex;
+          justify-content: space-between;
+
+          strong {
+            font-family: "Irish Grover", system-ui;
+          }
+        }
+
+        .buttons {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          button {
+            margin: 0.5rem;
+          }
+
+          .icon-group {
+            display: flex;
+            gap: 0.5rem;
+
+            .icon {
+              cursor: pointer;
+              font-size: 1.2rem;
+            }
+
+            .fa-trash-alt {
+              color: #dc3545; // Red color for delete icon
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @media (min-width: 768px) {
+    #product-list {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .card {
+      width: calc(95% - 1rem); // Adjust width for four cards per row
+      margin-bottom: 1rem; // Adjust spacing under each card
+    }
+  }
+
+  @media (max-width: 767px) {
+    .card {
+      width: 100%; // Cards take full width on mobile devices
+      margin-bottom: 10px; // Adjust spacing under each card
+    }
+  }
+}
