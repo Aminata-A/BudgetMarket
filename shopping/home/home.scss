@@ -6,6 +6,7 @@ $navbar-text-color: #ffffff;
 $navbar-hover-color: #f8f9fa;
 
 html, body {
+  min-height: 100vh;
   height: 100%;
   margin: 0;
   display: flex;

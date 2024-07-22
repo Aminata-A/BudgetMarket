@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
             displaySuccessMessage('Produit ajouté avec succès!'); // Affiche un message de succès
             event.target.reset(); // Réinitialise le formulaire
 
-            // Redirige l'utilisateur vers la page product.html avec la date spécifiée
+            // Redirige l'utilisateur vers la page products.html avec la date du jour
             setTimeout(() => {
                 window.location.href = `/shopping/product/HTML/product.html?date=${date}`;
             }, 500); 

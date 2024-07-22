@@ -7,6 +7,7 @@ $navbar-hover-color: #f8f9fa;
 
 body {
   font-family: "Roboto", sans-serif;
+  min-height: 100vh;
 
   .navbar-custom {
     background-color: $navbar-bg-color;
