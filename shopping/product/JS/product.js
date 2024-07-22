@@ -96,7 +96,6 @@ async function loadProducts(filter = null) {
   }
 }
 
-// Fonction pour afficher les produits sur la page
 function renderProducts(products, filterType = null) {
   const productList = document.getElementById('product-list');
   const noProductsMessage = document.getElementById('no-products-message');
@@ -144,7 +143,7 @@ function renderProducts(products, filterType = null) {
                 ${product.is_purchased ? 'Acheté' : 'Acheter'}
               </button>
               <div class="d-flex">
-                <button class="btn btn-light modify-button" data-id="${product.id}"><i class="fas fa-pencil-alt"></i></button>
+                <button class="btn btn-light modify-button ${product.is_purchased ? 'disabled' : ''}" data-id="${product.id}" ${product.is_purchased ? 'disabled' : ''}><i class="fas fa-pencil-alt"></i></button>
                 <button class="btn btn-light text-danger delete-button" data-id="${product.id}"><i class="fas fa-trash"></i></button>
               </div>
             </div>
@@ -162,6 +161,8 @@ function renderProducts(products, filterType = null) {
     attachEventListeners();
   }
 }
+
+
 
 // Fonction pour filtrer les produits par date
 async function filterProductsByDate() {
@@ -231,9 +232,9 @@ function attachEventListeners() {
 }
 
 // Fonction pour ouvrir la popup de modification
+// Fonction pour ouvrir la popup de modification
 async function openModifyPopup(productId) {
-  const modifyPopup = document.getElementById('modify-popup');
-  const modifyForm = document.getElementById('modify-form');
+  const modifyPopup = new bootstrap.Modal(document.getElementById('editProductModal'));
 
   try {
     const { data: { session }, error: sessionError } = await supabase.auth.getSession();
@@ -259,19 +260,20 @@ async function openModifyPopup(productId) {
       console.error('Erreur lors de la récupération du produit à modifier:', error.message);
     } else {
       // Pré-remplir le formulaire de modification avec les données du produit
-      modifyForm['modify-name'].value = product.product_name;
-      modifyForm['modify-price'].value = product.product_price;
-      modifyForm['modify-quantity'].value = product.quantity;
-      modifyForm['modify-date'].value = product.date;
-      modifyForm['product-id'].value = product.id;
+      document.getElementById('editProductName').value = product.product_name;
+      document.getElementById('editProductPrice').value = product.product_price;
+      document.getElementById('editProductQuantity').value = product.quantity;
+      document.getElementById('editProductDate').value = product.date;
+      document.getElementById('editProductId').value = product.id;
 
-      // Afficher la popup
-      modifyPopup.classList.add('show');
+      // Afficher le modal
+      modifyPopup.show();
     }
   } catch (error) {
     console.error('Erreur lors de l\'ouverture de la popup de modification:', error.message);
   }
 }
+
 
 // Fonction pour fermer la popup de modification
 function closeModifyPopup() {
