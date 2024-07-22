@@ -26,14 +26,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Affiche une alerte en cas d'erreur de récupération de la session
         if (sessionError) {
-            alert('Erreur lors de la récupération de la session: ' + sessionError.message);
+            console.error('Erreur lors de la récupération de la session: ' + sessionError.message);
             return;
         }
 
         const user = sessionData.session?.user; // Récupère l'utilisateur connecté
         // Affiche une alerte si l'utilisateur n'est pas connecté
         if (!user) {
-            alert('Vous devez être connecté pour ajouter un produit.');
+            console.error('Vous devez être connecté pour ajouter un produit.');
             return;
         }
 

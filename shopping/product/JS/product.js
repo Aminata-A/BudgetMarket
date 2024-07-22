@@ -1,11 +1,15 @@
+// Importation de la bibliothèque Supabase
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
+// Définition de l'URL et de la clé d'accès à Supabase
 const supabaseUrl = 'https://gtcacfzpieqklamuvbup.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0Y2FjZnpwaWVxa2xhbXV2YnVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjEzMTQ2NzksImV4cCI6MjAzNjg5MDY3OX0.sk6pq5hqqrYMshpcgcMtO4yl2TBhFAqHsx1cdWeySSw';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+// Attendre que le DOM soit chargé avant d'exécuter le code
 document.addEventListener('DOMContentLoaded', async () => {
   try {
+    // Récupération de la session utilisateur
     const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 
     if (sessionError) {
@@ -13,15 +17,18 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
 
+    // Si l'utilisateur est connecté, afficher les produits pour aujourd'hui et ajuster les boutons
     if (session && session.user) {
       document.getElementById('loginBtn').style.display = 'none';
       document.getElementById('logoutBtn').style.display = 'inline';
       await loadProductsForToday();
     } else {
+      // Sinon, afficher le bouton de connexion et cacher le bouton de déconnexion
       document.getElementById('loginBtn').style.display = 'inline';
       document.getElementById('logoutBtn').style.display = 'none';
     }
 
+    // Ajouter un écouteur d'événements pour le bouton de déconnexion
     document.getElementById('logoutBtn').addEventListener('click', async () => {
       const { error: signOutError } = await supabase.auth.signOut();
       if (signOutError) {
@@ -31,6 +38,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     });
 
+    // Ajouter des écouteurs d'événements pour les filtres et la recherche
     document.getElementById('filter-date').addEventListener('change', filterProductsByDate);
     document.getElementById('search-input').addEventListener('input', filterProductsBySearch);
     document.getElementById('filter-all').addEventListener('click', () => loadProducts());
@@ -41,12 +49,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
+// Fonction pour charger les produits du jour actuel
 async function loadProductsForToday() {
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('filter-date').value = today;
   await loadProducts();
 }
 
+// Fonction pour charger les produits en fonction de la date et du filtre
 async function loadProducts(filter = null) {
   try {
     const { data: { session }, error: sessionError } = await supabase.auth.getSession();
@@ -86,6 +96,7 @@ async function loadProducts(filter = null) {
   }
 }
 
+// Fonction pour afficher les produits sur la page
 function renderProducts(products, filterType = null) {
   const productList = document.getElementById('product-list');
   const noProductsMessage = document.getElementById('no-products-message');
@@ -152,10 +163,12 @@ function renderProducts(products, filterType = null) {
   }
 }
 
+// Fonction pour filtrer les produits par date
 async function filterProductsByDate() {
   await loadProducts();
 }
 
+// Fonction pour filtrer les produits par recherche
 async function filterProductsBySearch() {
   const searchInput = document.getElementById('search-input').value.toLowerCase();
   try {
@@ -190,6 +203,7 @@ async function filterProductsBySearch() {
   }
 }
 
+// Fonction pour attacher les gestionnaires d'événements aux boutons après le rendu des produits
 function attachEventListeners() {
   // Événement pour le bouton "Modifier"
   document.querySelectorAll('.modify-button').forEach(button => {
@@ -203,9 +217,7 @@ function attachEventListeners() {
   document.querySelectorAll('.delete-button').forEach(button => {
     button.addEventListener('click', async (event) => {
       const productId = event.currentTarget.getAttribute('data-id');
-      if (confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
-        await deleteProduct(productId);
-      }
+      await deleteProduct(productId);
     });
   });
 
@@ -213,102 +225,128 @@ function attachEventListeners() {
   document.querySelectorAll('.purchase-button').forEach(button => {
     button.addEventListener('click', async (event) => {
       const productId = event.currentTarget.getAttribute('data-id');
-      await togglePurchaseStatus(productId);
+      await purchaseProduct(productId);
     });
   });
 }
 
+// Fonction pour ouvrir la popup de modification
 async function openModifyPopup(productId) {
-  const { data: product, error } = await supabase
-    .from('shopping-list')
-    .select('*')
-    .eq('id', productId)
-    .single();
+  const modifyPopup = document.getElementById('modify-popup');
+  const modifyForm = document.getElementById('modify-form');
 
-  if (error) {
-    console.error('Erreur lors de la récupération du produit pour modification:', error.message);
-    return;
+  try {
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+    if (sessionError) {
+      console.error('Erreur lors de la récupération de la session:', sessionError.message);
+      return;
+    }
+
+    if (!session || !session.user) {
+      console.error('Aucun utilisateur connecté pour modifier le produit');
+      return;
+    }
+
+    const { data: product, error } = await supabase
+      .from('shopping-list')
+      .select('*')
+      .eq('user_id', session.user.id)
+      .eq('id', productId)
+      .single();
+
+    if (error) {
+      console.error('Erreur lors de la récupération du produit à modifier:', error.message);
+    } else {
+      // Pré-remplir le formulaire de modification avec les données du produit
+      modifyForm['modify-name'].value = product.product_name;
+      modifyForm['modify-price'].value = product.product_price;
+      modifyForm['modify-quantity'].value = product.quantity;
+      modifyForm['modify-date'].value = product.date;
+      modifyForm['product-id'].value = product.id;
+
+      // Afficher la popup
+      modifyPopup.classList.add('show');
+    }
+  } catch (error) {
+    console.error('Erreur lors de l\'ouverture de la popup de modification:', error.message);
   }
-
-  const modal = new bootstrap.Modal(document.getElementById('editProductModal'));
-  document.getElementById('editProductId').value = productId;
-  document.getElementById('editProductName').value = product.product_name;
-  document.getElementById('editProductPrice').value = product.product_price;
-  document.getElementById('editProductDate').value = product.date;
-  document.getElementById('editProductQuantity').value = product.quantity;
-
-  modal.show();
 }
 
-document.getElementById('editProductForm').addEventListener('submit', async (event) => {
+// Fonction pour fermer la popup de modification
+function closeModifyPopup() {
+  const modifyPopup = document.getElementById('modify-popup');
+  modifyPopup.classList.remove('show');
+}
+
+// Fonction pour mettre à jour le produit modifié
+async function updateProduct(event) {
   event.preventDefault();
-  
-  const productId = document.getElementById('editProductId').value;
-  const productName = document.getElementById('editProductName').value;
-  const productPrice = document.getElementById('editProductPrice').value;
-  const productDate = document.getElementById('editProductDate').value;
-  const productQuantity = document.getElementById('editProductQuantity').value;
+
+  const modifyForm = document.getElementById('modify-form');
+  const productId = modifyForm['product-id'].value;
+  const updatedProduct = {
+    product_name: modifyForm['modify-name'].value,
+    product_price: parseFloat(modifyForm['modify-price'].value),
+    quantity: parseInt(modifyForm['modify-quantity'].value, 10),
+    date: modifyForm['modify-date'].value,
+  };
 
   try {
     const { error } = await supabase
       .from('shopping-list')
-      .update({ product_name: productName, product_price: productPrice, date: productDate, quantity: productQuantity })
+      .update(updatedProduct)
       .eq('id', productId);
 
     if (error) {
       console.error('Erreur lors de la mise à jour du produit:', error.message);
     } else {
-      const modal = bootstrap.Modal.getInstance(document.getElementById('editProductModal'));
-      modal.hide();
-      await loadProducts(); // Recharger les produits après modification
+      closeModifyPopup();
+      await loadProducts();
     }
   } catch (error) {
     console.error('Erreur lors de la mise à jour du produit:', error.message);
   }
-});
+}
 
+// Fonction pour supprimer un produit
 async function deleteProduct(productId) {
+  if (confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
+    try {
+      const { error } = await supabase
+        .from('shopping-list')
+        .delete()
+        .eq('id', productId);
+
+      if (error) {
+        console.error('Erreur lors de la suppression du produit:', error.message);
+      } else {
+        await loadProducts();
+      }
+    } catch (error) {
+      console.error('Erreur lors de la suppression du produit:', error.message);
+    }
+  }
+}
+
+// Fonction pour marquer un produit comme acheté
+async function purchaseProduct(productId) {
   try {
     const { error } = await supabase
       .from('shopping-list')
-      .delete()
+      .update({ is_purchased: true })
       .eq('id', productId);
 
     if (error) {
-      console.error('Erreur lors de la suppression du produit:', error.message);
+      console.error('Erreur lors de la mise à jour du produit comme acheté:', error.message);
     } else {
-      await loadProducts(); // Recharger les produits après suppression
+      await loadProducts();
     }
   } catch (error) {
-    console.error('Erreur lors de la suppression du produit:', error.message);
+    console.error('Erreur lors de la mise à jour du produit comme acheté:', error.message);
   }
 }
 
-async function togglePurchaseStatus(productId) {
-  try {
-    const { data: product, error } = await supabase
-      .from('shopping-list')
-      .select('is_purchased')
-      .eq('id', productId)
-      .single();
-
-    if (error) {
-      console.error('Erreur lors de la récupération du produit:', error.message);
-      return;
-    }
-
-    const newStatus = !product.is_purchased;
-    const { error: updateError } = await supabase
-      .from('shopping-list')
-      .update({ is_purchased: newStatus })
-      .eq('id', productId);
-
-    if (updateError) {
-      console.error('Erreur lors de la mise à jour du statut d\'achat:', updateError.message);
-    } else {
-      await loadProducts(); 
-    }
-  } catch (error) {
-    console.error('Erreur lors de la mise à jour du statut d\'achat:', error.message);
-  }
-}
+// Ajouter un écouteur d'événement pour le formulaire de modification
+document.getElementById('modify-form').addEventListener('submit', updateProduct);
+document.getElementById('modify-popup-close').addEventListener('click', closeModifyPopup);
