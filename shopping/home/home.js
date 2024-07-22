@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   logoutBtn.addEventListener('click', async () => {
     try {
       await supabase.auth.signOut();
-      window.location.reload(); // Recharge la page après déconnexion
+      window.location.href = '/Authentication/signin.html';
     } catch (err) {
       console.error('Erreur lors de la déconnexion:', err);
     }

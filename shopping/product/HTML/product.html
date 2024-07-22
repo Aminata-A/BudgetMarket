@@ -80,7 +80,7 @@
       <!-- Les cartes de produits seront générées ici par JavaScript -->
     </div>
     
-    <!-- Modal pour modifier un produit -->
+    <!-- Modal for editing products -->
     <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -90,32 +90,29 @@
           </div>
           <div class="modal-body">
             <form id="editProductForm">
-              <!-- Champ caché pour l'ID du produit -->
-              <input type="hidden" id="editProductId" name="product_id">
-              <!-- Champs de formulaire pour modifier les détails du produit -->
+              <input type="hidden" id="product-id">
               <div class="mb-3">
-                <label for="editProductName" class="form-label">Nom du produit</label>
-                <input type="text" class="form-control" id="editProductName" name="product_name" required>
+                <label for="product-name" class="form-label">Nom du produit</label>
+                <input type="text" class="form-control" id="product-name" required>
               </div>
               <div class="mb-3">
-                <label for="editProductPrice" class="form-label">Prix</label>
-                <input type="number" class="form-control" id="editProductPrice" name="product_price" step="0.01" required>
+                <label for="product-price" class="form-label">Prix</label>
+                <input type="number" class="form-control" id="product-price" step="0.01" required>
               </div>
               <div class="mb-3">
-                <label for="editProductDate" class="form-label">Date</label>
-                <input type="date" class="form-control" id="editProductDate" name="date" required>
+                <label for="product-quantity" class="form-label">Quantité</label>
+                <input type="number" class="form-control" id="product-quantity" required>
               </div>
               <div class="mb-3">
-                <label for="editProductQuantity" class="form-label">Quantité</label>
-                <input type="number" class="form-control" id="editProductQuantity" name="quantity" required>
+                <label for="product-date" class="form-label">Date</label>
+                <input type="date" class="form-control" id="product-date" required>
               </div>
-              <button type="submit" class="btn btn-dark">Enregistrer</button>
+              <button type="submit" class="btn btn-dark">Enregistrer les modifications</button>
             </form>
           </div>
         </div>
       </div>
     </div>
-    
   </main>
   
   <!-- Scripts JavaScript -->
