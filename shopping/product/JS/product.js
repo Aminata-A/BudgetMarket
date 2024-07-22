@@ -111,7 +111,7 @@ function renderProducts(products, filterType = null) {
     if (filterType === 'purchased') {
       noProductsText.innerText = "Il n'y a pas de produits achetés.";
     } else if (filterType === 'pending') {
-      noProductsText.innerText = "Il n'y a pas de produits en attente.";
+      noProductsText.innerText = "Il n'y a pas de produits non achetés.";
     } else {
       noProductsText.innerText = "Aujourd'hui, vous n'avez pas de courses à faire.";
     }
