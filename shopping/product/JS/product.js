@@ -152,7 +152,7 @@ function renderProducts(products, filterType = null) {
                 ${product.is_purchased ? 'Acheté' : 'Acheter'}
               </button>
               <div class="d-flex">
-                <button class="btn btn-light modify-button ${product.is_purchased ? 'disabled' : ''}" data-id="${product.id}" ${product.is_purchased ? 'disabled' : ''}><i class="fas fa-pencil-alt"></i></button>
+                <button class="btn btn-light modify-button ${product.is_purchased ? 'disabled' : ''}" data-id="${product.id}" ${product.is_purchased ? 'disabled' : ''}><i class="fa-solid fa-pen-to-square"></i></button>
                 <button class="btn btn-light text-danger delete-button" data-id="${product.id}"><i class="fas fa-trash"></i></button>
               </div>
             </div>

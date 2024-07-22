@@ -78,9 +78,9 @@ body .banniere img {
 }
 body #filter-buttons {
   display: flex;
-  flex-direction: column;
+  justify-content: space-around;
   align-items: center;
-  margin: 20px 0;
+  width: 100%;
 }
 body #filter-buttons button {
   margin: 10px;
