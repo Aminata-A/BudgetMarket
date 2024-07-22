@@ -31,7 +31,7 @@
             <a id="loginBtn" class="nav-link" href="/Authentication/signin.html">Se connecter</a>
           </li>
           <li class="nav-item">
-            <a id="logoutBtn" class="nav-link" href="/shopping/home/home.html" style="display:none; color: red;">Se déconnecter</a>
+            <a id="logoutBtn" class="nav-link" href="#" style="display:none; color: red;">Se déconnecter</a>
           </li>
         </ul>
       </div>
@@ -39,8 +39,35 @@
   </nav>
   <main class="flex-fill">
     <div class="container">
-      <img src="./../../img/home.png" alt="home image" class="home-image">
-      <div class="text-content">
+      <!-- Carrousel Bootstrap -->
+      <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img src="/img/home.png" class="d-block w-100" alt="Image 1">
+          </div>
+          <div class="carousel-item">
+            <img src="/img/home2.png" class="d-block w-100" alt="Image 2">
+          </div>
+          <div class="carousel-item">
+            <img src="/img/home4.png" class="d-block w-100" alt="Image 3">
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+
+      <div class="text-content mt-4">
         <h2>Bienvenu</h2>
         <p>We apologize for any inconvenience this may have caused. We hope to be back online soon. We hope to be back online soon. We hope to be back online soon...</p>
       </div>
@@ -52,35 +79,6 @@
   </footer>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
-    const supabaseUrl = 'https://gtcacfzpieqklamuvbup.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0Y2FjZnpwaWVxa2xhbXV2YnVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjEzMTQ2NzksImV4cCI6MjAzNjg5MDY3OX0.sk6pq5hqqrYMshpcgcMtO4yl2TBhFAqHsx1cdWeySSw';
-    const supabase = createClient(supabaseUrl, supabaseKey);
-
-    document.addEventListener('DOMContentLoaded', async () => {
-      const loginBtn = document.getElementById('loginBtn');
-      const logoutBtn = document.getElementById('logoutBtn');
-
-      // Vérifie si un utilisateur est connecté
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        // Utilisateur connecté
-        loginBtn.style.display = 'none';
-        logoutBtn.style.display = 'block';
-      } else {
-        // Aucun utilisateur connecté
-        loginBtn.style.display = 'block';
-        logoutBtn.style.display = 'none';
-      }
-
-      // Gestion de la déconnexion
-      logoutBtn.addEventListener('click', async () => {
-        await supabase.auth.signOut();
-        window.location.reload(); // Recharge la page après déconnexion
-      });
-    });
-  </script>
+  <script type="module" src="home.js"></script>
 </body>
 </html>

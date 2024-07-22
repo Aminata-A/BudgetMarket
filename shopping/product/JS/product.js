@@ -306,7 +306,7 @@ async function togglePurchaseStatus(productId) {
     if (updateError) {
       console.error('Erreur lors de la mise à jour du statut d\'achat:', updateError.message);
     } else {
-      await loadProducts(); // Recharger les produits après mise à jour
+      await loadProducts(); 
     }
   } catch (error) {
     console.error('Erreur lors de la mise à jour du statut d\'achat:', error.message);

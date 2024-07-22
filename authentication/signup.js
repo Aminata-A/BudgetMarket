@@ -53,8 +53,10 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
+      // Stocker un message de succès dans localStorage
+      localStorage.setItem('signupSuccess', 'Inscription réussie. Vous pouvez maintenant vous connecter.');
+
       // Redirection après inscription réussie
-      console.log('Inscription réussie:', user);
       window.location.href = './signin.html';
     } catch (error) {
       displayFormError('Une erreur est survenue: ' + error.message);

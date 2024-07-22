@@ -1,31 +1,28 @@
-// Exemple de vérification de l'état de l'utilisateur
-let isLoggedIn = false; // Modifier cette variable pour simuler l'état de connexion
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-const loginBtn = document.getElementById('loginBtn');
-const logoutBtn = document.getElementById('logoutBtn');
+    const supabaseUrl = 'https://gtcacfzpieqklamuvbup.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0Y2FjZnpwaWVxa2xhbXV2YnVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjEzMTQ2NzksImV4cCI6MjAzNjg5MDY3OX0.sk6pq5hqqrYMshpcgcMtO4yl2TBhFAqHsx1cdWeySSw';
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
-function updateNav() {
-  if (isLoggedIn) {
-    loginBtn.style.display = 'none';
-    logoutBtn.style.display = 'block';
-  } else {
-    loginBtn.style.display = 'block';
-    logoutBtn.style.display = 'none';
-  }
-}
+    document.addEventListener('DOMContentLoaded', async () => {
+      const loginBtn = document.getElementById('loginBtn');
+      const logoutBtn = document.getElementById('logoutBtn');
 
-// Appeler la fonction pour initialiser l'état des boutons
-updateNav();
+      // Vérifie si un utilisateur est connecté
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        // Utilisateur connecté
+        loginBtn.style.display = 'none';
+        logoutBtn.style.display = 'block';
+      } else {
+        // Aucun utilisateur connecté
+        loginBtn.style.display = 'block';
+        logoutBtn.style.display = 'none';
+      }
 
-// Simuler la connexion/déconnexion
-loginBtn.addEventListener('click', (e) => {
-  e.preventDefault();
-  isLoggedIn = true;
-  updateNav();
-});
-
-logoutBtn.addEventListener('click', (e) => {
-  e.preventDefault();
-  isLoggedIn = false;
-  updateNav();
-});
+      // Gestion de la déconnexion
+      logoutBtn.addEventListener('click', async () => {
+        await supabase.auth.signOut();
+        window.location.reload(); // Recharge la page après déconnexion
+      });
+    });
