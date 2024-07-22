@@ -29,6 +29,7 @@ body {
     }
   }
 
+
   .banniere {
     display: flex;
     flex-direction: column;
@@ -160,6 +161,10 @@ body {
         .purchase-button {
           height: 2rem; // Adjust height as needed
           padding: 0.25rem 0.5rem; // Adjust padding as needed
+        }
+        .modify-button.disabled {
+          pointer-events: none;
+          opacity: 0.5;
         }
 
         p strong {
